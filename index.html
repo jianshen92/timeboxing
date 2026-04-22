@@ -1755,12 +1755,47 @@ async function copyState() {
   }
 }
 
+/* Some Android keyboards / sharesheets rewrite emoji to their CLDR short
+   names (":runner:", ":brain:" …) when copying to the clipboard. We never
+   see the original codepoint, so we restore the common ones here and drop
+   any unknown shortcode (→ falls back to the name-hashed ✨). */
+const SHORTCODE_EMOJI = {
+  brain:'🧠', runner:'🏃', book:'📖', open_book:'📖', books:'📚',
+  speech_balloon:'💬', broom:'🧹', ramen:'🍜', steaming_bowl:'🍜',
+  bento:'🍱', muscle:'💪', bed:'🛏️', sleeping_accommodation:'🛌',
+  shower:'🚿', ice_cube:'🧊', rocket:'🚀', video_game:'🎮',
+  guitar:'🎸', mirror_ball:'🪩', dancer:'💃', person_climbing:'🧗',
+  bicyclist:'🚴', bike:'🚲', microphone:'🎤', game_die:'🎲',
+  art:'🎨', camera:'📸', camera_with_flash:'📸', performing_arts:'🎭',
+  fish_cake:'🍥', zap:'⚡', octopus:'🐙', party_popper:'🎉',
+  sparkles:'✨', bus:'🚌', fried_egg:'🍳', coffee:'☕', salad:'🥗',
+  apple:'🍎', red_apple:'🍎', cake:'🍰', cup_with_straw:'🥤',
+  pizza:'🍕', people:'👥', busts_in_silhouette:'👥', telephone:'📞',
+  handshake:'🤝', heart:'❤️', red_heart:'❤️', basket:'🧺', soap:'🧼',
+  wrench:'🔧', potted_plant:'🪴', headphones:'🎧', teddy_bear:'🧸',
+  tv:'📺', herb:'🌿',
+};
+function normalizeEmoji(e) {
+  if (typeof e !== 'string') return '';
+  const t = e.trim();
+  const m = t.match(/^:([a-z0-9_+\-]+):$/i);
+  if (!m) return t;
+  return SHORTCODE_EMOJI[m[1].toLowerCase()] || '';
+}
+
 async function applyPastedText(text) {
   let parsed;
   try { parsed = JSON.parse(text); }
   catch { toast("that doesn't look like a timetable (not JSON)", { err: true }); return; }
   if (!parsed || !Array.isArray(parsed.activities) || !Array.isArray(parsed.blocks)) {
     toast("JSON missing activities/blocks — wrong shape", { err: true }); return;
+  }
+  // repair shortcode-mangled emoji (some Android clipboards do this)
+  let repaired = 0;
+  for (const a of parsed.activities) {
+    const before = a.emoji;
+    a.emoji = normalizeEmoji(a.emoji);
+    if (typeof before === 'string' && before !== a.emoji) repaired++;
   }
   const existing = (state.blocks || []).length;
   if (existing > 0) {
@@ -1777,7 +1812,7 @@ async function applyPastedText(text) {
   };
   save();
   render();
-  toast('loaded timetable!');
+  toast(repaired ? `loaded! fixed ${repaired} shortcode emoji` : 'loaded timetable!');
 }
 
 async function pasteState() {
