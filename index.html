@@ -884,6 +884,8 @@
   <footer>
     <button class="btn primary" id="btn-copy" title="copy timetable to clipboard (Ctrl/Cmd+C)">📋 copy</button>
     <button class="btn" id="btn-paste" title="paste a timetable from clipboard (Ctrl/Cmd+V)">📥 paste</button>
+    <button class="btn" id="btn-save" title="download your timetable as a .json file">💾 save</button>
+    <button class="btn" id="btn-load" title="load a .json file from disk">📂 load</button>
     <span class="note">saved in your browser — share by copy/paste.</span>
     <span class="credit">zine-ish style, inspired by julia evans ✎</span>
   </footer>
@@ -1608,6 +1610,40 @@ async function pasteState() {
 
 document.getElementById('btn-copy').addEventListener('click', copyState);
 document.getElementById('btn-paste').addEventListener('click', pasteState);
+
+function saveStateToFile() {
+  const payload = JSON.stringify(state, null, 2);
+  const blob = new Blob([payload], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const now = new Date();
+  const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `timeboxing-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('saved timetable to disk 💾');
+}
+
+function loadStateFromFile() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json,.json';
+  input.addEventListener('change', () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => applyPastedText(String(reader.result || ''));
+    reader.onerror = () => toast('could not read that file', { err: true });
+    reader.readAsText(file);
+  });
+  input.click();
+}
+
+document.getElementById('btn-save').addEventListener('click', saveStateToFile);
+document.getElementById('btn-load').addEventListener('click', loadStateFromFile);
 
 document.addEventListener('keydown', (e) => {
   const mod = e.metaKey || e.ctrlKey;

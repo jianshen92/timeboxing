@@ -49,7 +49,7 @@ which means: rename a block and it re-themes. delete a palette entry and the pla
 - **Ctrl/Cmd+V** → pastes a timetable in. asks first if you already have blocks.
 - or use the **📋 copy** / **📥 paste** buttons at the bottom.
 
-you can also hand-edit JSON and paste it. see `sample.json` for a chill week, and `exciting.json` for one that deliberately over-books wednesday.
+you can also hand-edit JSON and paste it. see `sample/sample.json` for a chill week, and `sample/exciting.json` for one that deliberately over-books wednesday.
 
 ## where the data lives
 
