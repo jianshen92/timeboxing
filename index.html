@@ -210,7 +210,7 @@
     cursor: grab;
     box-shadow: var(--shadow-sm);
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto auto;
     gap: 8px;
     align-items: center;
     user-select: none;
@@ -228,6 +228,19 @@
     border: 1.5px solid var(--ink);
     background: var(--accent);
     white-space: nowrap;
+  }
+  .activity .edit-btn {
+    border: 1.5px solid var(--ink);
+    background: var(--paper-2);
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .activity .tools {
     grid-column: 1 / -1;
@@ -756,6 +769,74 @@
     display: inline-block;
     transform: rotate(-6deg);
   }
+
+  /* "armed" state: an activity selected for tap-to-place on touch devices */
+  .activity.armed {
+    outline: 3px dashed var(--ink);
+    outline-offset: 3px;
+  }
+  .armed-banner {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 12px;
+    transform: translateX(-50%) rotate(-1deg);
+    z-index: 180;
+    background: var(--green);
+    border: 2.5px solid var(--ink);
+    box-shadow: var(--shadow);
+    padding: 6px 12px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    max-width: 92vw;
+  }
+  .armed-banner.open { display: flex; gap: 10px; align-items: center; }
+  .armed-banner .cancel {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 14px;
+    padding: 0 8px;
+    cursor: pointer;
+  }
+  /* highlight days + dailies so it's obvious they're tap targets */
+  body.is-arming .day,
+  body.is-arming .dailies {
+    outline: 3px dashed var(--ink);
+    outline-offset: 4px;
+    animation: armingPulse 1.2s ease-in-out infinite;
+  }
+  @keyframes armingPulse { 50% { outline-color: var(--accent); } }
+
+  /* ===== mobile layout tweaks ===== */
+  @media (max-width: 720px) {
+    .page { padding: 20px 14px 80px; }
+    h1 { font-size: 44px; }
+    header.title { gap: 12px; }
+    header.title .logo { width: 110px; height: 66px; }
+    header.title h1 { padding: 2px 14px 6px; }
+    header.title .sub { font-size: 16px; padding: 3px 8px; }
+    .intro { font-size: 16px; margin: 10px 0 16px; line-height: 1.4; }
+    .palette-toggle { top: 12px; right: 12px; font-size: 14px; padding: 5px 10px; }
+    .palette { width: 100vw; max-width: 100vw; padding: 16px 14px; }
+    .budget-pill { font-size: 14px; padding: 4px 8px; }
+    .doodle-arrow { display: none; }
+    .board-tools { margin-bottom: 12px; }
+    .dailies { padding: 8px 10px; margin-bottom: 12px; }
+    .dailies .dailies-head h3 { font-size: 20px; }
+    .dailies .dailies-head .note { font-size: 13px; }
+    .day .day-head .name { font-size: 22px; }
+    .day .day-head { padding: 6px 8px; }
+    .day .blocks { padding: 6px; gap: 4px; }
+    footer { margin-top: 24px; gap: 8px; }
+    footer .credit { margin-left: 0; }
+    .zc-card { padding: 18px 16px 14px; }
+    .zc-msg { font-size: 16px; }
+    .board { gap: 8px; }
+  }
+  @media (max-width: 480px) {
+    .board { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -900,6 +981,12 @@
 
   <div class="toast" id="toast"></div>
 
+  <!-- banner for tap-to-place on touch (shown after you tap an activity) -->
+  <div class="armed-banner" id="armed-banner">
+    <span id="armed-text"></span>
+    <button class="cancel" id="armed-cancel">cancel</button>
+  </div>
+
   <!-- zine confirm dialog (reused for all confirms) -->
   <div class="zc-backdrop" id="zc-backdrop">
     <div class="zc-card" role="alertdialog" aria-modal="true">
@@ -933,6 +1020,8 @@
    an Activity's emoji/color instantly updates every placed block of that name.
    Duration stays per-block — same activity can be 60m one day, 90m the next.
    ===================================================================== */
+
+const IS_TOUCH = matchMedia('(pointer: coarse)').matches;
 
 const STORAGE_KEY = 'timeboxing-zine-v1';
 const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -1062,6 +1151,7 @@ function renderActivity(a) {
     <span class="emoji"></span>
     <span class="name"></span>
     <span class="dur"></span>
+    <button class="edit-btn" type="button" title="edit">✎</button>
     <div class="tools">
       <input class="emoji-input" type="text" maxlength="4" title="click to pick emoji" readonly>
       <input class="name-in" type="text" value="" maxlength="40" placeholder="activity name">
@@ -1079,6 +1169,21 @@ function renderActivity(a) {
   el.querySelector('.emoji').textContent = a.emoji;
   el.querySelector('.name').textContent = a.name;
   el.querySelector('.dur').textContent = fmtDuration(a.defaultDurationMinutes);
+
+  // explicit edit button (works on both desktop and touch)
+  el.querySelector('.edit-btn').addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    if (el.classList.contains('editing')) {
+      el.classList.remove('editing');
+      el.draggable = true;
+      return;
+    }
+    document.querySelectorAll('.activity.editing').forEach(o => { o.classList.remove('editing'); o.draggable = true; });
+    el.classList.add('editing');
+    el.draggable = false;
+    nameIn.focus();
+    nameIn.select();
+  });
   const nameIn = el.querySelector('.name-in');
   const durIn = el.querySelector('.dur-in');
   const emojiIn = el.querySelector('.emoji-input');
@@ -1127,6 +1232,13 @@ function renderActivity(a) {
   el.addEventListener('click', (e) => {
     if (el.classList.contains('editing')) return;
     if (e.target.closest('.tools')) return;
+    // On coarse-pointer devices, a single tap arms this activity for
+    // tap-to-place (HTML5 drag-and-drop is unreliable on iOS Safari).
+    if (IS_TOUCH) {
+      if (armedActivityId === a.id) { disarmPlacement(); return; }
+      armPlacement(a.id);
+      return;
+    }
     document.querySelectorAll('.activity.editing').forEach(o => o.classList.remove('editing'));
     el.classList.add('editing');
     el.draggable = false;
@@ -1499,6 +1611,70 @@ document.getElementById('palette-toggle').addEventListener('click', openPalette)
 document.getElementById('palette-close').addEventListener('click', closePalette);
 paletteBackdrop.addEventListener('click', closePalette);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePalette(); });
+
+/* =====================================================================
+   TAP-TO-PLACE (touch devices)
+   ---------------------------------------------------------------------
+   HTML5 drag-and-drop is unreliable on iOS Safari, so on coarse-pointer
+   devices we switch to: tap an activity → tap a day. Both inputs coexist.
+   ===================================================================== */
+
+let armedActivityId = null;
+const armedBanner = document.getElementById('armed-banner');
+const armedText = document.getElementById('armed-text');
+
+function armPlacement(activityId) {
+  const a = state.activities.find(x => x.id === activityId);
+  if (!a) return;
+  armedActivityId = activityId;
+  armedText.textContent = `adding ${a.emoji} ${a.name} — tap a day`;
+  armedBanner.classList.add('open');
+  document.body.classList.add('is-arming');
+  document.querySelectorAll('.activity.armed').forEach(o => o.classList.remove('armed'));
+  const card = document.querySelector(`.activity[data-activity-id="${activityId}"]`);
+  if (card) card.classList.add('armed');
+  closePalette();
+}
+function disarmPlacement() {
+  armedActivityId = null;
+  armedBanner.classList.remove('open');
+  document.body.classList.remove('is-arming');
+  document.querySelectorAll('.activity.armed').forEach(o => o.classList.remove('armed'));
+}
+function placeArmedOn(dayEl) {
+  if (armedActivityId == null) return false;
+  const a = state.activities.find(x => x.id === armedActivityId);
+  if (!a) { disarmPlacement(); return false; }
+  const dayIndex = parseInt(dayEl.dataset.dayIndex, 10);
+  const siblings = state.blocks.filter(b => b.dayIndex === dayIndex);
+  const newBlock = {
+    id: uid(),
+    dayIndex,
+    orderIndex: siblings.length,
+    name: a.name,
+    durationMinutes: a.defaultDurationMinutes,
+  };
+  state.blocks.push(newBlock);
+  save();
+  renderDailies();
+  renderBoard();
+  renderBudgetPill();
+  disarmPlacement();
+  return true;
+}
+
+document.getElementById('armed-cancel').addEventListener('click', disarmPlacement);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && armedActivityId != null) { e.preventDefault(); disarmPlacement(); }
+});
+// Tap on a day / dailies area to place when armed
+document.addEventListener('click', (e) => {
+  if (armedActivityId == null) return;
+  const target = e.target.closest('.day, .dailies');
+  if (!target) return;
+  if (e.target.closest('.block, .x, .dur-edit, .edit-btn')) return;
+  placeArmedOn(target);
+});
 
 /* =====================================================================
    CLIPBOARD SHARE — copy/paste the whole timetable as JSON
