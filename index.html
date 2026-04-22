@@ -219,13 +219,7 @@
   .activity:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
   .activity:active { cursor: grabbing; transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ink); }
   .activity.dragging { opacity: 0.4; }
-  .activity .emoji,
-  .block .emoji,
-  .emoji-input,
-  .armed-banner {
-    font-family: var(--emoji-font), 'Patrick Hand', cursive;
-  }
-  .activity .emoji { font-size: 20px; }
+  .activity .emoji { font-size: 20px; font-family: var(--emoji-font); }
   .activity .name { font-weight: 700; font-size: 15px; line-height: 1.15; }
   .activity .dur {
     font-family: 'Patrick Hand', cursive;
@@ -282,6 +276,7 @@
   }
   .activity.editing .swatches { display: grid; }
   .emoji-input {
+    font-family: var(--emoji-font);
     font-size: 18px;
     border: 2px solid var(--ink);
     background: var(--paper);
@@ -595,7 +590,7 @@
   .block:active { cursor: grabbing; }
   .block.dragging { opacity: 0.3; }
   .block .row { display: flex; align-items: center; gap: 6px; }
-  .block .emoji { font-size: 16px; }
+  .block .emoji { font-size: 16px; font-family: var(--emoji-font); }
   .block .name {
     font-weight: 700;
     flex: 1;
@@ -980,8 +975,6 @@
     <button class="btn" id="btn-paste" title="paste a timetable from clipboard (Ctrl/Cmd+V)">📥 paste</button>
     <button class="btn" id="btn-save" title="download your timetable as a .json file">💾 save</button>
     <button class="btn" id="btn-load" title="load a .json file from disk">📂 load</button>
-    <button class="btn" id="btn-sample" title="load a chill sample week">✨ sample</button>
-    <button class="btn" id="btn-exciting" title="load a chaotic sample week">🔥 exciting</button>
     <span class="note">saved in your browser — share by copy/paste.</span>
     <span class="credit">zine-ish style, inspired by julia evans ✎</span>
   </footer>
@@ -1835,19 +1828,6 @@ function loadStateFromFile() {
 
 document.getElementById('btn-save').addEventListener('click', saveStateToFile);
 document.getElementById('btn-load').addEventListener('click', loadStateFromFile);
-
-async function loadSample(path) {
-  try {
-    const res = await fetch(path, { cache: 'no-cache' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
-    await applyPastedText(text);
-  } catch (e) {
-    toast('could not load sample: ' + e.message, { err: true });
-  }
-}
-document.getElementById('btn-sample').addEventListener('click', () => loadSample('sample/sample.json'));
-document.getElementById('btn-exciting').addEventListener('click', () => loadSample('sample/exciting.json'));
 
 document.addEventListener('keydown', (e) => {
   const mod = e.metaKey || e.ctrlKey;
