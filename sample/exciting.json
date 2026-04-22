@@ -1,0 +1,78 @@
+{
+  "activities": [
+    { "id": "a-sleep",      "name": "Sleep (barely)",  "emoji": "🛌", "color": "#d9b3ff", "defaultDurationMinutes": 360 },
+    { "id": "a-meal",       "name": "Meal",            "emoji": "🍜", "color": "#9fe3d7", "defaultDurationMinutes": 45  },
+    { "id": "a-shower",     "name": "Shower",          "emoji": "🚿", "color": "#a8d8ff", "defaultDurationMinutes": 10  },
+    { "id": "a-coldplunge", "name": "Cold plunge",     "emoji": "🧊", "color": "#7fb8d9", "defaultDurationMinutes": 15  },
+
+    { "id": "a-hyperfocus", "name": "Hyperfocus",      "emoji": "🧠", "color": "#ffd84d", "defaultDurationMinutes": 180 },
+    { "id": "a-ship",       "name": "Ship feature",    "emoji": "🚀", "color": "#ff9f9f", "defaultDurationMinutes": 120 },
+    { "id": "a-bossfight",  "name": "Boss fight",      "emoji": "🎮", "color": "#ffb37a", "defaultDurationMinutes": 60  },
+    { "id": "a-band",       "name": "Band practice",   "emoji": "🎸", "color": "#b59fd9", "defaultDurationMinutes": 90  },
+    { "id": "a-rave",       "name": "Warehouse rave",  "emoji": "🪩", "color": "#f0c9e8", "defaultDurationMinutes": 240 },
+    { "id": "a-salsa",      "name": "Salsa class",     "emoji": "💃", "color": "#ff9fb5", "defaultDurationMinutes": 90  },
+    { "id": "a-climb",      "name": "Rock climbing",   "emoji": "🧗", "color": "#c9e4a6", "defaultDurationMinutes": 120 },
+    { "id": "a-bike",       "name": "Bike tour",       "emoji": "🚴", "color": "#7fd1a3", "defaultDurationMinutes": 180 },
+    { "id": "a-karaoke",    "name": "Karaoke",         "emoji": "🎤", "color": "#ffc9de", "defaultDurationMinutes": 120 },
+    { "id": "a-dnd",        "name": "D&D night",       "emoji": "🎲", "color": "#e8a5a5", "defaultDurationMinutes": 240 },
+    { "id": "a-paint",      "name": "Paint stuff",     "emoji": "🎨", "color": "#ffe599", "defaultDurationMinutes": 90  },
+    { "id": "a-photo",      "name": "Photo walk",      "emoji": "📸", "color": "#b3c9f0", "defaultDurationMinutes": 60  },
+    { "id": "a-improv",     "name": "Improv class",    "emoji": "🎭", "color": "#c9a3e0", "defaultDurationMinutes": 90  },
+    { "id": "a-ramen",      "name": "Ramen crawl",     "emoji": "🍥", "color": "#ffcf99", "defaultDurationMinutes": 120 },
+    { "id": "a-nap",        "name": "Nap attack",      "emoji": "⚡", "color": "#a8dad1", "defaultDurationMinutes": 20  },
+    { "id": "a-hateread",   "name": "Hate-reading",    "emoji": "📚", "color": "#e0b3d6", "defaultDurationMinutes": 30  },
+    { "id": "a-octo",       "name": "Octopus doc",     "emoji": "🐙", "color": "#99c2e0", "defaultDurationMinutes": 45  }
+  ],
+  "blocks": [
+    { "id": "d-sleep",  "dayIndex": -1, "orderIndex": 0, "name": "Sleep (barely)", "durationMinutes": 360 },
+    { "id": "d-meal",   "dayIndex": -1, "orderIndex": 1, "name": "Meal",           "durationMinutes": 45  },
+    { "id": "d-shower", "dayIndex": -1, "orderIndex": 2, "name": "Shower",         "durationMinutes": 10  },
+    { "id": "d-cold",   "dayIndex": -1, "orderIndex": 3, "name": "Cold plunge",    "durationMinutes": 15  },
+
+    { "id": "mon-1", "dayIndex": 0, "orderIndex": 0, "name": "Hyperfocus",     "durationMinutes": 180 },
+    { "id": "mon-2", "dayIndex": 0, "orderIndex": 1, "name": "Ship feature",   "durationMinutes": 120 },
+    { "id": "mon-3", "dayIndex": 0, "orderIndex": 2, "name": "Rock climbing",  "durationMinutes": 120 },
+    { "id": "mon-4", "dayIndex": 0, "orderIndex": 3, "name": "Boss fight",     "durationMinutes": 60  },
+    { "id": "mon-5", "dayIndex": 0, "orderIndex": 4, "name": "D&D night",      "durationMinutes": 240 },
+
+    { "id": "tue-1", "dayIndex": 1, "orderIndex": 0, "name": "Hyperfocus",     "durationMinutes": 180 },
+    { "id": "tue-2", "dayIndex": 1, "orderIndex": 1, "name": "Nap attack",     "durationMinutes": 20  },
+    { "id": "tue-3", "dayIndex": 1, "orderIndex": 2, "name": "Salsa class",    "durationMinutes": 90  },
+    { "id": "tue-4", "dayIndex": 1, "orderIndex": 3, "name": "Bike tour",      "durationMinutes": 180 },
+    { "id": "tue-5", "dayIndex": 1, "orderIndex": 4, "name": "Warehouse rave", "durationMinutes": 240 },
+
+    { "id": "wed-1", "dayIndex": 2, "orderIndex": 0, "name": "Hyperfocus",     "durationMinutes": 240 },
+    { "id": "wed-2", "dayIndex": 2, "orderIndex": 1, "name": "Ship feature",   "durationMinutes": 240 },
+    { "id": "wed-3", "dayIndex": 2, "orderIndex": 2, "name": "Band practice",  "durationMinutes": 120 },
+    { "id": "wed-4", "dayIndex": 2, "orderIndex": 3, "name": "Photo walk",     "durationMinutes": 60  },
+    { "id": "wed-5", "dayIndex": 2, "orderIndex": 4, "name": "Improv class",   "durationMinutes": 120 },
+    { "id": "wed-6", "dayIndex": 2, "orderIndex": 5, "name": "Paint stuff",    "durationMinutes": 120 },
+    { "id": "wed-7", "dayIndex": 2, "orderIndex": 6, "name": "Karaoke",        "durationMinutes": 180 },
+
+    { "id": "thu-1", "dayIndex": 3, "orderIndex": 0, "name": "Nap attack",     "durationMinutes": 20  },
+    { "id": "thu-2", "dayIndex": 3, "orderIndex": 1, "name": "Hate-reading",   "durationMinutes": 30  },
+    { "id": "thu-3", "dayIndex": 3, "orderIndex": 2, "name": "Octopus doc",    "durationMinutes": 45  },
+    { "id": "thu-4", "dayIndex": 3, "orderIndex": 3, "name": "Paint stuff",    "durationMinutes": 90  },
+    { "id": "thu-5", "dayIndex": 3, "orderIndex": 4, "name": "Hyperfocus",     "durationMinutes": 120 },
+
+    { "id": "fri-1", "dayIndex": 4, "orderIndex": 0, "name": "Hyperfocus",     "durationMinutes": 120 },
+    { "id": "fri-2", "dayIndex": 4, "orderIndex": 1, "name": "Ship feature",   "durationMinutes": 120 },
+    { "id": "fri-3", "dayIndex": 4, "orderIndex": 2, "name": "Ramen crawl",    "durationMinutes": 120 },
+    { "id": "fri-4", "dayIndex": 4, "orderIndex": 3, "name": "Karaoke",        "durationMinutes": 120 },
+    { "id": "fri-5", "dayIndex": 4, "orderIndex": 4, "name": "Warehouse rave", "durationMinutes": 240 },
+
+    { "id": "sat-1", "dayIndex": 5, "orderIndex": 0, "name": "Rock climbing",  "durationMinutes": 120 },
+    { "id": "sat-2", "dayIndex": 5, "orderIndex": 1, "name": "Bike tour",      "durationMinutes": 180 },
+    { "id": "sat-3", "dayIndex": 5, "orderIndex": 2, "name": "Ramen crawl",    "durationMinutes": 120 },
+    { "id": "sat-4", "dayIndex": 5, "orderIndex": 3, "name": "Boss fight",     "durationMinutes": 60  },
+    { "id": "sat-5", "dayIndex": 5, "orderIndex": 4, "name": "D&D night",      "durationMinutes": 240 },
+
+    { "id": "sun-1", "dayIndex": 6, "orderIndex": 0, "name": "Photo walk",     "durationMinutes": 60  },
+    { "id": "sun-2", "dayIndex": 6, "orderIndex": 1, "name": "Paint stuff",    "durationMinutes": 90  },
+    { "id": "sun-3", "dayIndex": 6, "orderIndex": 2, "name": "Band practice",  "durationMinutes": 90  },
+    { "id": "sun-4", "dayIndex": 6, "orderIndex": 3, "name": "Improv class",   "durationMinutes": 90  },
+    { "id": "sun-5", "dayIndex": 6, "orderIndex": 4, "name": "Hate-reading",   "durationMinutes": 30  },
+    { "id": "sun-6", "dayIndex": 6, "orderIndex": 5, "name": "Octopus doc",    "durationMinutes": 45  }
+  ],
+  "settings": {}
+}

@@ -1,0 +1,50 @@
+{
+  "activities": [
+    { "id": "a-sleep",    "name": "Sleep",     "emoji": "🛌", "color": "#d9b3ff", "defaultDurationMinutes": 480 },
+    { "id": "a-meal",     "name": "Meal",      "emoji": "🍜", "color": "#9fe3d7", "defaultDurationMinutes": 30 },
+    { "id": "a-shower",   "name": "Shower",    "emoji": "🚿", "color": "#a8d8ff", "defaultDurationMinutes": 20 },
+    { "id": "a-deepwork", "name": "Deep work", "emoji": "🧠", "color": "#b3c9f0", "defaultDurationMinutes": 120 },
+    { "id": "a-meetings", "name": "Meetings",  "emoji": "💬", "color": "#ffcf99", "defaultDurationMinutes": 60 },
+    { "id": "a-exercise", "name": "Exercise",  "emoji": "🏃", "color": "#b8e6b2", "defaultDurationMinutes": 45 },
+    { "id": "a-reading",  "name": "Reading",   "emoji": "📖", "color": "#c9a3e0", "defaultDurationMinutes": 60 },
+    { "id": "a-social",   "name": "Social",    "emoji": "🎉", "color": "#ffb3c1", "defaultDurationMinutes": 120 },
+    { "id": "a-errands",  "name": "Errands",   "emoji": "🧹", "color": "#ffe599", "defaultDurationMinutes": 60 },
+    { "id": "a-commute",  "name": "Commute",   "emoji": "🚌", "color": "#e8dcc0", "defaultDurationMinutes": 45 }
+  ],
+  "blocks": [
+    { "id": "d-sleep",   "dayIndex": -1, "orderIndex": 0, "name": "Sleep",   "durationMinutes": 480 },
+    { "id": "d-meal",    "dayIndex": -1, "orderIndex": 1, "name": "Meal",    "durationMinutes": 90  },
+    { "id": "d-shower",  "dayIndex": -1, "orderIndex": 2, "name": "Shower",  "durationMinutes": 20  },
+    { "id": "d-commute", "dayIndex": -1, "orderIndex": 3, "name": "Commute", "durationMinutes": 60  },
+
+    { "id": "mon-1", "dayIndex": 0, "orderIndex": 0, "name": "Deep work", "durationMinutes": 120 },
+    { "id": "mon-2", "dayIndex": 0, "orderIndex": 1, "name": "Meetings",  "durationMinutes": 60  },
+    { "id": "mon-3", "dayIndex": 0, "orderIndex": 2, "name": "Exercise",  "durationMinutes": 45  },
+    { "id": "mon-4", "dayIndex": 0, "orderIndex": 3, "name": "Reading",   "durationMinutes": 60  },
+
+    { "id": "tue-1", "dayIndex": 1, "orderIndex": 0, "name": "Deep work", "durationMinutes": 180 },
+    { "id": "tue-2", "dayIndex": 1, "orderIndex": 1, "name": "Meetings",  "durationMinutes": 30  },
+    { "id": "tue-3", "dayIndex": 1, "orderIndex": 2, "name": "Reading",   "durationMinutes": 45  },
+
+    { "id": "wed-1", "dayIndex": 2, "orderIndex": 0, "name": "Deep work", "durationMinutes": 120 },
+    { "id": "wed-2", "dayIndex": 2, "orderIndex": 1, "name": "Exercise",  "durationMinutes": 60  },
+    { "id": "wed-3", "dayIndex": 2, "orderIndex": 2, "name": "Social",    "durationMinutes": 120 },
+
+    { "id": "thu-1", "dayIndex": 3, "orderIndex": 0, "name": "Deep work", "durationMinutes": 180 },
+    { "id": "thu-2", "dayIndex": 3, "orderIndex": 1, "name": "Meetings",  "durationMinutes": 60  },
+    { "id": "thu-3", "dayIndex": 3, "orderIndex": 2, "name": "Reading",   "durationMinutes": 60  },
+
+    { "id": "fri-1", "dayIndex": 4, "orderIndex": 0, "name": "Deep work", "durationMinutes": 90  },
+    { "id": "fri-2", "dayIndex": 4, "orderIndex": 1, "name": "Errands",   "durationMinutes": 90  },
+    { "id": "fri-3", "dayIndex": 4, "orderIndex": 2, "name": "Social",    "durationMinutes": 180 },
+
+    { "id": "sat-1", "dayIndex": 5, "orderIndex": 0, "name": "Exercise",  "durationMinutes": 90  },
+    { "id": "sat-2", "dayIndex": 5, "orderIndex": 1, "name": "Reading",   "durationMinutes": 120 },
+    { "id": "sat-3", "dayIndex": 5, "orderIndex": 2, "name": "Social",    "durationMinutes": 180 },
+
+    { "id": "sun-1", "dayIndex": 6, "orderIndex": 0, "name": "Reading",   "durationMinutes": 90  },
+    { "id": "sun-2", "dayIndex": 6, "orderIndex": 1, "name": "Errands",   "durationMinutes": 120 },
+    { "id": "sun-3", "dayIndex": 6, "orderIndex": 2, "name": "Deep work", "durationMinutes": 60  }
+  ],
+  "settings": {}
+}

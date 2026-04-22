@@ -1,0 +1,1652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time Boxing — plan your day, one chonk at a time</title>
+<meta name="description" content="A playful time-boxing planner. Drag activities onto a timeline and see where your hours actually go.">
+<meta name="theme-color" content="#ffd84d">
+<link rel="canonical" href="https://timeboxing.jaye.es/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='6' width='52' height='52' rx='8' fill='%23fbf7ee' stroke='%231a1a1a' stroke-width='4'/%3E%3Ccircle cx='32' cy='34' r='14' fill='%23ffd84d' stroke='%231a1a1a' stroke-width='4'/%3E%3Cpath d='M32 34 L32 24 M32 34 L40 38' stroke='%231a1a1a' stroke-width='4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Time Boxing">
+<meta property="og:title" content="Time Boxing — plan your day, one chonk at a time">
+<meta property="og:description" content="Drag activities onto a timeline and see where your hours actually go. A playful, paper-feeling planner.">
+<meta property="og:url" content="https://timeboxing.jaye.es/">
+<meta property="og:image" content="https://timeboxing.jaye.es/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Time Boxing — a hand-drawn planner with a yellow clock">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Time Boxing — plan your day, one chonk at a time">
+<meta name="twitter:description" content="Drag activities onto a timeline and see where your hours actually go.">
+<meta name="twitter:image" content="https://timeboxing.jaye.es/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Comic+Neue:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #fbf7ee;
+    --paper-2: #f3ecd8;
+    --line: #1a1a1a;
+    --accent: #ffd84d;
+    --pink: #ffb3c1;
+    --blue: #a8d8ff;
+    --green: #b8e6b2;
+    --purple: #d9b3ff;
+    --orange: #ffcf99;
+    --red: #ff9f9f;
+    --teal: #9fe3d7;
+    --shadow: 4px 4px 0 var(--ink);
+    --shadow-sm: 2px 2px 0 var(--ink);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Comic Neue', 'Comic Sans MS', system-ui, sans-serif;
+    font-size: 16px;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.08) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+
+  h1, h2, h3 { font-family: 'Caveat', cursive; margin: 0; font-weight: 700; }
+  h1 { font-size: 56px; line-height: 1; }
+  h2 { font-size: 32px; }
+  h3 { font-size: 24px; }
+
+  .page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* ------ header ------ */
+  header.title {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  header.title .logo { flex: 0 0 auto; }
+  header.title h1 {
+    transform: rotate(-2deg);
+    background: var(--accent);
+    padding: 4px 18px 8px;
+    border: 3px solid var(--ink);
+    box-shadow: var(--shadow);
+    display: inline-block;
+  }
+  header.title .sub {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    transform: rotate(1deg);
+    padding: 4px 10px;
+    background: var(--pink);
+    border: 2px solid var(--ink);
+    box-shadow: var(--shadow-sm);
+  }
+  .intro {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 18px;
+    margin: 14px 0 20px;
+    max-width: 820px;
+    line-height: 1.45;
+  }
+  .intro .hl {
+    background: var(--green);
+    padding: 1px 6px;
+    border: 2px solid var(--ink);
+    display: inline-block;
+    transform: rotate(-1deg);
+  }
+
+  /* ------ layout ------ */
+  .layout {
+    display: block;
+    position: relative;
+  }
+
+  /* ------ palette (slide-in side panel) ------ */
+  .palette-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 30;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 16px;
+    background: var(--accent);
+    border: 2.5px solid var(--ink);
+    box-shadow: var(--shadow);
+    padding: 6px 14px;
+    cursor: pointer;
+    transform: rotate(-2deg);
+  }
+  .palette-toggle:hover { transform: rotate(-2deg) translate(-1px,-1px); }
+
+  .palette-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.15);
+    z-index: 40;
+    display: none;
+  }
+  .palette-backdrop.open { display: block; }
+  /* while dragging from the palette, let pointer events pass through
+     the backdrop so dragover/drop reaches the board behind it */
+  body.dragging-from-palette .palette-backdrop { pointer-events: none; }
+
+  .palette {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    max-width: 90vw;
+    height: 100vh;
+    background: var(--paper-2);
+    border-left: 3px solid var(--ink);
+    box-shadow: -4px 0 0 var(--ink);
+    padding: 20px 18px;
+    z-index: 50;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform .22s ease;
+  }
+  .palette.open { transform: translateX(0); }
+  .palette .close-x {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+  }
+  .palette h2 {
+    display: inline-block;
+    background: var(--blue);
+    padding: 0 10px 2px;
+    border: 2px solid var(--ink);
+    transform: rotate(-1.5deg);
+    margin-bottom: 12px;
+  }
+  .palette .hint {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    color: #444;
+    margin: 0 0 12px;
+    line-height: 1.3;
+  }
+  .palette .hint .arrow { font-weight: bold; }
+
+  .activity-list { display: flex; flex-direction: column; gap: 10px; }
+  .activity {
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    padding: 8px 10px;
+    cursor: grab;
+    box-shadow: var(--shadow-sm);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    align-items: center;
+    user-select: none;
+    transition: transform .08s ease;
+  }
+  .activity:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+  .activity:active { cursor: grabbing; transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ink); }
+  .activity.dragging { opacity: 0.4; }
+  .activity .emoji { font-size: 20px; }
+  .activity .name { font-weight: 700; font-size: 15px; line-height: 1.15; }
+  .activity .dur {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 14px;
+    padding: 0 6px;
+    border: 1.5px solid var(--ink);
+    background: var(--accent);
+    white-space: nowrap;
+  }
+  .activity .tools {
+    grid-column: 1 / -1;
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+    align-items: center;
+  }
+  .activity.editing .tools { display: flex; }
+  .activity.editing { cursor: default; }
+  .activity.editing:active { transform: none; }
+  .activity .tools input, .activity .tools button {
+    font-family: inherit;
+    font-size: 14px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 2px 6px;
+  }
+  .activity .tools input.name-in { flex: 1 1 100%; min-width: 0; }
+  .activity .tools input.dur-in { width: 54px; text-align: right; }
+
+  .swatches {
+    display: none;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 4px;
+    margin-top: 8px;
+    padding: 6px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 1.5px 1.5px 0 var(--ink);
+    width: 100%;
+  }
+  .activity.editing .swatches { display: grid; }
+  .emoji-input {
+    font-family: inherit;
+    font-size: 18px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    width: 38px;
+    height: 30px;
+    text-align: center;
+    padding: 0;
+    cursor: pointer;
+  }
+  .emoji-picker-wrap {
+    display: none;
+    width: 100%;
+    margin-top: 8px;
+    border: 2px solid var(--ink);
+    box-shadow: 1.5px 1.5px 0 var(--ink);
+    background: var(--paper);
+  }
+  .activity.editing .emoji-picker-wrap.open { display: block; }
+  emoji-picker {
+    width: 100%;
+    height: 300px;
+    --background: var(--paper);
+    --border-color: var(--ink);
+    --button-active-background: var(--accent);
+    --button-hover-background: var(--paper-2);
+    --indicator-color: var(--ink);
+    --input-border-color: var(--ink);
+    --input-background: var(--paper-2);
+    --input-font-color: var(--ink);
+    --input-placeholder-color: #888;
+    --category-font-color: var(--ink);
+    --category-font-size: 13px;
+    --emoji-size: 1.2rem;
+    --emoji-padding: 0.3rem;
+    --num-columns: 8;
+    --outline-color: var(--ink);
+    --border-size: 0;
+    font-family: 'Patrick Hand', cursive;
+  }
+  .swatch {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 2px solid var(--ink);
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+  .swatch:hover { transform: translate(-1px,-1px); box-shadow: 2px 2px 0 var(--ink); }
+  .swatch.selected::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    text-shadow: 0 0 2px rgba(255,255,255,0.8);
+  }
+
+  .btn {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 16px;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    padding: 4px 12px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform .08s ease;
+  }
+  .btn:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); }
+  .btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--ink); }
+  .btn.primary { background: var(--accent); }
+  .btn.danger { background: var(--red); }
+  .btn.tiny { padding: 1px 8px; font-size: 14px; box-shadow: 1.5px 1.5px 0 var(--ink); border-width: 2px; }
+
+  .add-activity {
+    margin-top: 14px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  /* ------ days (board) ------ */
+  .board-tools {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .budget-pill {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    padding: 4px 10px;
+    border: 2px solid var(--ink);
+    background: var(--purple);
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .budget-pill input {
+    font-family: inherit;
+    font-size: 15px;
+    width: 54px;
+    border: 2px solid var(--ink);
+    padding: 0 4px;
+    background: var(--paper);
+    text-align: center;
+  }
+
+  /* ------ zine number stepper ------ */
+  .num {
+    display: inline-flex;
+    align-items: stretch;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 1.5px 1.5px 0 var(--ink);
+    overflow: hidden;
+    height: 24px;
+    vertical-align: middle;
+  }
+  .num input[type="number"] {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none;
+    background: transparent !important;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    text-align: center;
+    padding: 0 2px !important;
+    -moz-appearance: textfield;
+    width: 46px;
+    height: 100%;
+  }
+  .num input[type="number"]::-webkit-outer-spin-button,
+  .num input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .num button {
+    font-family: 'Comic Neue', system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1;
+    background: var(--accent);
+    border: none;
+    border-left: 2px solid var(--ink);
+    border-right: 2px solid var(--ink);
+    width: 24px;
+    cursor: pointer;
+    padding: 0;
+    font-weight: 900;
+    color: var(--ink);
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .num button:first-child { border-left: none; border-right: 2px solid var(--ink); background: var(--pink); }
+  .num button:last-child  { border-right: none; border-left: 2px solid var(--ink); background: var(--green); }
+  .num button:hover { filter: brightness(0.95); }
+  .num button:active { filter: brightness(0.85); }
+  .num.tiny { height: 22px; box-shadow: 1px 1px 0 var(--ink); }
+  .num.tiny input { font-size: 13px; width: 38px; }
+  .num.tiny button { width: 20px; font-size: 15px; }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 10px;
+  }
+  @media (max-width: 1100px) { .board { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 720px)  { .board { grid-template-columns: repeat(2, 1fr); } }
+
+  .dailies {
+    margin-bottom: 16px;
+    background: var(--paper-2);
+    border: 3px solid var(--ink);
+    box-shadow: var(--shadow);
+    padding: 10px 14px;
+    position: relative;
+  }
+  .dailies .dailies-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .dailies .dailies-head h3 {
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    padding: 0 10px;
+    transform: rotate(-1deg);
+    box-shadow: var(--shadow-sm);
+  }
+  .dailies .dailies-head .note {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    color: #444;
+    line-height: 1.3;
+  }
+  .dailies .blocks {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 44px;
+    padding: 4px;
+  }
+  .dailies.drop-target .blocks {
+    background: repeating-linear-gradient(45deg, rgba(0,0,0,0.04) 0 6px, transparent 6px 12px);
+  }
+  .dailies .block {
+    min-height: 28px !important;
+    flex: 0 0 auto;
+    min-width: 100px;
+    max-width: 200px;
+  }
+  .dailies .empty {
+    text-align: center;
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 14px;
+    padding: 8px;
+    flex: 1;
+    pointer-events: none;
+  }
+
+  .day {
+    background: var(--paper-2);
+    border: 3px solid var(--ink);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+  }
+  .day .day-head {
+    padding: 8px 10px;
+    border-bottom: 2.5px dashed var(--ink);
+    background: var(--paper);
+  }
+  .day .day-head .name {
+    font-family: 'Caveat', cursive;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+    display: inline-block;
+    transform: rotate(-1.5deg);
+  }
+  .day .day-head .total {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bar {
+    flex: 1;
+    height: 8px;
+    background: var(--paper-2);
+    border: 1.5px solid var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .bar .fill {
+    display: block;
+    height: 100%;
+    background: var(--green);
+    transition: width .2s ease;
+  }
+  .bar.over .fill { background: var(--red); }
+
+  .day .blocks {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-height: 80px;
+  }
+  .day.drop-target .blocks { background: repeating-linear-gradient(45deg, rgba(0,0,0,0.04) 0 6px, transparent 6px 12px); }
+  .day .empty {
+    text-align: center;
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    padding: 14px 6px;
+    font-size: 14px;
+    line-height: 1.3;
+    pointer-events: none;
+  }
+
+  .block {
+    border: 2.5px solid var(--ink);
+    padding: 4px 8px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    cursor: grab;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 28px;
+    font-size: 14px;
+  }
+  .block:active { cursor: grabbing; }
+  .block.dragging { opacity: 0.3; }
+  .block .row { display: flex; align-items: center; gap: 6px; }
+  .block .emoji { font-size: 16px; }
+  .block .name {
+    font-weight: 700;
+    flex: 1;
+    line-height: 1.1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  .block .dur {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+    background: rgba(255,255,255,0.7);
+    border: 1.5px solid var(--ink);
+    padding: 0 5px;
+  }
+  .block .x {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    font-size: 12px;
+    line-height: 16px;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .1s;
+    border-radius: 50%;
+    padding: 0;
+    font-weight: 700;
+  }
+  .block:hover .x { opacity: 1; }
+
+  .block .dur-edit {
+    display: none;
+    margin-top: 4px;
+    gap: 4px;
+    align-items: center;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 13px;
+  }
+  .block.editing .dur-edit { display: flex; }
+  .block .dur-edit input {
+    font-family: inherit;
+    font-size: 13px;
+    width: 44px;
+    border: 1.5px solid var(--ink);
+    background: rgba(255,255,255,0.8);
+    padding: 0 4px;
+    text-align: right;
+  }
+
+  .drop-indicator {
+    height: 3px;
+    background: var(--ink);
+    margin: -2px 0;
+    position: relative;
+  }
+  .drop-indicator::before, .drop-indicator::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 9px;
+    height: 9px;
+    background: var(--ink);
+    border-radius: 50%;
+  }
+  .drop-indicator::before { left: -2px; }
+  .drop-indicator::after  { right: -2px; }
+
+  /* ------ footer ------ */
+  footer {
+    margin-top: 40px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 15px;
+    color: #555;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  footer .note {
+    background: var(--teal);
+    border: 2px solid var(--ink);
+    padding: 2px 10px;
+    box-shadow: var(--shadow-sm);
+    transform: rotate(-1deg);
+  }
+  footer .credit {
+    margin-left: auto;
+    font-style: italic;
+    opacity: 0.75;
+  }
+
+  /* zine-style confirm modal */
+  .zc-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .zc-backdrop.open { display: flex; }
+  .zc-card {
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    box-shadow: var(--shadow);
+    padding: 20px 22px 18px;
+    max-width: 420px;
+    width: calc(100% - 40px);
+    transform: rotate(-1deg);
+    position: relative;
+  }
+  .zc-card::before {
+    content: '!';
+    position: absolute;
+    top: -18px;
+    left: -18px;
+    width: 38px;
+    height: 38px;
+    border: 3px solid var(--ink);
+    background: var(--accent);
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transform: rotate(-8deg);
+  }
+  .zc-msg {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 18px;
+    line-height: 1.35;
+    margin-bottom: 16px;
+  }
+  .zc-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .zc-buttons .btn.primary { background: var(--green); }
+  .zc-buttons .btn.danger  { background: var(--red); }
+
+  /* zine-style toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1deg);
+    background: var(--accent);
+    border: 2.5px solid var(--ink);
+    box-shadow: var(--shadow);
+    padding: 8px 16px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 16px;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease;
+  }
+  .toast.show { opacity: 1; }
+  .toast.err { background: var(--red); }
+
+  /* arrow doodle */
+  .doodle-arrow {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--ink);
+    display: inline-block;
+    transform: rotate(-6deg);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="title">
+    <svg class="logo" width="180" height="108" viewBox="0 0 150 90" xmlns="http://www.w3.org/2000/svg" aria-label="time boxing logo">
+      <defs>
+        <!-- subtle wobble so strokes feel hand-drawn -->
+        <filter id="wobble" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="2" seed="3"/>
+          <feDisplacementMap in="SourceGraphic" scale="0.7"/>
+        </filter>
+      </defs>
+      <g fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#wobble)">
+
+        <!-- LEFT CLOCK (attacker, leaning in) -->
+        <g transform="translate(32 42) rotate(-12)">
+          <circle cx="0" cy="0" r="22" fill="#a8d8ff"/>
+          <!-- tick marks -->
+          <line x1="0" y1="-18" x2="0" y2="-14"/>
+          <line x1="0" y1="14" x2="0" y2="18"/>
+          <line x1="-18" y1="0" x2="-14" y2="0"/>
+          <line x1="14" y1="0" x2="18" y2="0"/>
+          <!-- angry eyebrows -->
+          <path d="M -10 -6 L -4 -3" stroke-width="2.5"/>
+          <path d="M 10 -6 L 4 -3" stroke-width="2.5"/>
+          <!-- eyes -->
+          <circle cx="-6" cy="0" r="1.6" fill="#1a1a1a" stroke="none"/>
+          <circle cx="6" cy="0" r="1.6" fill="#1a1a1a" stroke="none"/>
+          <!-- determined mouth -->
+          <path d="M -5 8 Q 0 6 5 8"/>
+          <!-- clock hands (pointing like a fist-forward pose) -->
+          <line x1="0" y1="0" x2="7" y2="-3" stroke-width="2.5"/>
+          <line x1="0" y1="0" x2="3" y2="6" stroke-width="2"/>
+          <circle cx="0" cy="0" r="1.5" fill="#1a1a1a" stroke="none"/>
+        </g>
+
+        <!-- LEFT ARM + GLOVE (throwing a right cross toward center) -->
+        <path d="M 50 40 Q 62 36 70 42" stroke-width="3" fill="none"/>
+        <g transform="translate(74 44) rotate(10)">
+          <path d="M -7 -8 Q -10 0 -7 8 Q 3 12 9 6 Q 11 0 9 -6 Q 3 -12 -7 -8 Z" fill="#ff9f9f"/>
+          <!-- glove thumb -->
+          <path d="M -4 -4 Q -8 -2 -5 2" fill="#ff9f9f"/>
+          <!-- stitching line -->
+          <path d="M -2 -6 Q 0 0 -2 6" stroke-dasharray="1.5 2"/>
+        </g>
+
+        <!-- RIGHT CLOCK (taking the hit, reeling back) -->
+        <g transform="translate(118 46) rotate(14)">
+          <circle cx="0" cy="0" r="22" fill="#ffcf99"/>
+          <line x1="0" y1="-18" x2="0" y2="-14"/>
+          <line x1="0" y1="14" x2="0" y2="18"/>
+          <line x1="-18" y1="0" x2="-14" y2="0"/>
+          <line x1="14" y1="0" x2="18" y2="0"/>
+          <!-- surprised eyes (X and O) -->
+          <path d="M -9 -3 L -3 3 M -9 3 L -3 -3" stroke-width="2"/>
+          <circle cx="6" cy="0" r="2.5" fill="none"/>
+          <!-- "oh no" mouth -->
+          <ellipse cx="0" cy="9" rx="3" ry="2.5" fill="#1a1a1a" stroke="none"/>
+          <!-- clock hands knocked askew -->
+          <line x1="0" y1="0" x2="-8" y2="-4" stroke-width="2.5"/>
+          <line x1="0" y1="0" x2="-2" y2="7" stroke-width="2"/>
+          <circle cx="0" cy="0" r="1.5" fill="#1a1a1a" stroke="none"/>
+        </g>
+
+        <!-- RIGHT ARM + GLOVE (raised defensively) -->
+        <path d="M 140 42 Q 146 32 138 22" stroke-width="3" fill="none"/>
+        <g transform="translate(136 18) rotate(-20)">
+          <path d="M -7 -8 Q -10 0 -7 8 Q 3 12 9 6 Q 11 0 9 -6 Q 3 -12 -7 -8 Z" fill="#b8e6b2"/>
+          <path d="M -4 -4 Q -8 -2 -5 2" fill="#b8e6b2"/>
+          <path d="M -2 -6 Q 0 0 -2 6" stroke-dasharray="1.5 2"/>
+        </g>
+
+        <!-- impact burst between them -->
+        <g transform="translate(92 44)">
+          <path d="M -10 0 L -4 -2 L -2 -8 L 2 -3 L 8 -6 L 5 0 L 10 3 L 3 4 L 4 10 L 0 5 L -4 9 L -3 2 Z" fill="#ffd84d" stroke-width="2"/>
+        </g>
+
+        <!-- motion lines -->
+        <path d="M 60 22 L 66 26" stroke-width="2"/>
+        <path d="M 58 30 L 64 32" stroke-width="2"/>
+        <path d="M 60 66 L 66 62" stroke-width="2"/>
+      </g>
+    </svg>
+
+    <h1>time boxing !!</h1>
+    <span class="sub">a week, in chunks ~ not clock-times</span>
+  </header>
+
+  <p class="intro">
+    open the <span class="hl">✎ activities</span> panel on the right, then drag things onto a day.
+    blocks have a <b>duration</b> but <b>no fixed time</b> — the order is just the order you'd like to do them in.
+    the goal is to see if your week <i>adds up</i> the way you want it to.
+  </p>
+
+  <div class="layout">
+
+    <!-- ========== board (main) ========== -->
+    <section class="board-wrap">
+      <div class="board-tools">
+        <span class="budget-pill" id="budget-pill"></span>
+        <span class="doodle-arrow">↖ 24h minus the daily fixed stuff</span>
+      </div>
+
+      <div class="dailies" id="dailies" data-day-index="-1">
+        <div class="dailies-head">
+          <h3>every day ~</h3>
+          <span class="note">drop things you do daily (sleep, meals, shower...). they subtract from each day's budget.</span>
+        </div>
+        <div class="blocks"></div>
+      </div>
+
+      <div class="board" id="board"></div>
+    </section>
+
+    <!-- ========== palette (slide-in) ========== -->
+    <button class="palette-toggle" id="palette-toggle">✎ activities</button>
+    <div class="palette-backdrop" id="palette-backdrop"></div>
+    <aside class="palette" id="palette">
+      <button class="close-x" id="palette-close" title="close">×</button>
+      <h2>activities</h2>
+      <p class="hint"><span class="arrow">→</span> drag onto a day. click to edit.</p>
+      <div class="activity-list" id="activity-list"></div>
+
+      <div class="add-activity">
+        <button class="btn primary" id="btn-add-activity">+ new activity</button>
+        <button class="btn tiny" id="btn-reset" title="wipe everything">reset</button>
+      </div>
+    </aside>
+
+  </div>
+
+  <footer>
+    <button class="btn primary" id="btn-copy" title="copy timetable to clipboard (Ctrl/Cmd+C)">📋 copy</button>
+    <button class="btn" id="btn-paste" title="paste a timetable from clipboard (Ctrl/Cmd+V)">📥 paste</button>
+    <span class="note">saved in your browser — share by copy/paste.</span>
+    <span class="credit">zine-ish style, inspired by julia evans ✎</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- zine confirm dialog (reused for all confirms) -->
+  <div class="zc-backdrop" id="zc-backdrop">
+    <div class="zc-card" role="alertdialog" aria-modal="true">
+      <div class="zc-msg" id="zc-msg"></div>
+      <div class="zc-buttons">
+        <button class="btn" id="zc-cancel">cancel</button>
+        <button class="btn primary" id="zc-ok">ok</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =====================================================================
+   DATA MODEL
+   ---------------------------------------------------------------------
+   Activity : palette entry   { id, name, emoji, color, defaultDurationMinutes }
+   Block    : placed instance { id, dayIndex, orderIndex, name, durationMinutes }
+                dayIndex 0..6 = Mon..Sun, dayIndex -1 = "dailies" bucket
+                (dailies apply every day and subtract from each day's budget)
+   Settings : { } — budget is derived as 1440 − sum(dailies)
+
+   A block's identity IS its name. Emoji and color are derived from the name:
+     1. if an Activity with the same (trimmed, lowercased) name exists, use its
+        emoji + color
+     2. otherwise fall back to a deterministic FNV-1a hash of the name, mapped
+        onto the palette, with a default emoji
+
+   So every block sharing a name shares appearance automatically, and editing
+   an Activity's emoji/color instantly updates every placed block of that name.
+   Duration stays per-block — same activity can be 60m one day, 90m the next.
+   ===================================================================== */
+
+const STORAGE_KEY = 'timeboxing-zine-v1';
+const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+/* 27-color zine palette: soft pastels grouped by hue, a few pops at the end */
+const PALETTE = [
+  '#ffb3c1','#ff9fb5','#ffc9de','#e8a5a5','#ff9f9f',
+  '#ffcf99','#ffb37a','#ffe0b3','#ffe599','#ffd84d',
+  '#c9e4a6','#b8e6b2','#7fd1a3','#9fe3d7','#a8dad1',
+  '#a8d8ff','#b3c9f0','#c2dbef','#99c2e0','#7fb8d9',
+  '#d9b3ff','#c9a3e0','#b59fd9','#e0b3d6','#f0c9e8',
+  '#e8dcc0','#d9c9a8',
+];
+const COLORS = PALETTE;
+
+const uid = () => Math.random().toString(36).slice(2, 10);
+const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const colorOf = (c) => c.startsWith('--') ? cssVar(c) : c;
+
+const normName = (s) => (s || '').trim().toLowerCase();
+
+/* FNV-1a 32-bit — stable across reloads, good enough distribution */
+function hashString(s) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619) >>> 0;
+  }
+  return h >>> 0;
+}
+
+/* appearance derived purely from name */
+function appearanceOf(name) {
+  const key = normName(name);
+  const act = state.activities.find(a => normName(a.name) === key);
+  if (act) return { emoji: act.emoji || '✨', color: act.color };
+  const color = PALETTE[hashString(key) % PALETTE.length];
+  return { emoji: '✨', color };
+}
+
+function defaultState() {
+  return {
+    activities: [
+      { id: uid(), name: 'Deep work',   emoji: '🧠', color: '#a8d8ff', defaultDurationMinutes: 120 },
+      { id: uid(), name: 'Exercise',    emoji: '🏃', color: '#b8e6b2', defaultDurationMinutes: 45  },
+      { id: uid(), name: 'Reading',     emoji: '📖', color: '#d9b3ff', defaultDurationMinutes: 60  },
+      { id: uid(), name: 'Meetings',    emoji: '💬', color: '#ffcf99', defaultDurationMinutes: 60  },
+      { id: uid(), name: 'Chores',      emoji: '🧹', color: '#ffb3c1', defaultDurationMinutes: 30  },
+      { id: uid(), name: 'Meal',        emoji: '🍜', color: '#9fe3d7', defaultDurationMinutes: 45  },
+    ],
+    blocks: [],
+    settings: {}
+  };
+}
+
+function dailiesTotalMinutes() {
+  return state.blocks
+    .filter(b => b.dayIndex === -1)
+    .reduce((s, b) => s + b.durationMinutes, 0);
+}
+function effectiveBudgetMinutes() {
+  return Math.max(0, 1440 - dailiesTotalMinutes());
+}
+
+let state = load();
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    if (!parsed.activities || !parsed.blocks || !parsed.settings) return defaultState();
+    return parsed;
+  } catch (e) {
+    return defaultState();
+  }
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+/* ---------- formatting ---------- */
+function fmtDuration(min) {
+  min = Math.max(0, Math.round(min));
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (h && m) return `${h}h${m}`;
+  if (h) return `${h}h`;
+  return `${m}m`;
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+
+function render() {
+  renderPalette();
+  renderDailies();
+  renderBoard();
+  renderBudgetPill();
+}
+
+function renderBudgetPill() {
+  const fixed = dailiesTotalMinutes();
+  const budget = effectiveBudgetMinutes();
+  const pill = document.getElementById('budget-pill');
+  if (fixed === 0) {
+    pill.innerHTML = `daily budget: <b>24h</b> <span style="opacity:.6">(no dailies yet)</span>`;
+  } else {
+    pill.innerHTML = `daily budget: <b>${fmtDuration(budget)}</b> &nbsp;=&nbsp; 24h − <b>${fmtDuration(fixed)}</b> fixed`;
+  }
+}
+
+function renderPalette() {
+  const list = document.getElementById('activity-list');
+  list.innerHTML = '';
+  state.activities.forEach(a => list.appendChild(renderActivity(a)));
+}
+
+function renderActivity(a) {
+  const el = document.createElement('div');
+  el.className = 'activity';
+  el.draggable = true;
+  el.dataset.activityId = a.id;
+  el.style.borderLeft = `8px solid ${colorOf(a.color)}`;
+  el.innerHTML = `
+    <span class="emoji"></span>
+    <span class="name"></span>
+    <span class="dur"></span>
+    <div class="tools">
+      <input class="emoji-input" type="text" maxlength="4" title="click to pick emoji" readonly>
+      <input class="name-in" type="text" value="" maxlength="40" placeholder="activity name">
+      <span class="num tiny" data-step="5">
+        <button type="button" aria-label="less">−</button>
+        <input class="dur-in" type="number" min="5" max="1440" step="5">
+        <button type="button" aria-label="more">+</button>
+      </span>
+      <button class="btn tiny save">ok</button>
+      <button class="btn tiny danger del">×</button>
+      <div class="emoji-picker-wrap"></div>
+      <div class="swatches"></div>
+    </div>
+  `;
+  el.querySelector('.emoji').textContent = a.emoji;
+  el.querySelector('.name').textContent = a.name;
+  el.querySelector('.dur').textContent = fmtDuration(a.defaultDurationMinutes);
+  const nameIn = el.querySelector('.name-in');
+  const durIn = el.querySelector('.dur-in');
+  const emojiIn = el.querySelector('.emoji-input');
+  nameIn.value = a.name;
+  emojiIn.value = a.emoji || '';
+  durIn.value = a.defaultDurationMinutes;
+
+  const pickerWrap = el.querySelector('.emoji-picker-wrap');
+  let selectedEmoji = a.emoji || '';
+  let pickerMounted = false;
+  const mountPicker = () => {
+    if (pickerMounted) return;
+    const picker = document.createElement('emoji-picker');
+    picker.addEventListener('emoji-click', (ev) => {
+      selectedEmoji = ev.detail.unicode;
+      emojiIn.value = selectedEmoji;
+    });
+    pickerWrap.appendChild(picker);
+    pickerMounted = true;
+  };
+  emojiIn.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    mountPicker();
+    pickerWrap.classList.toggle('open');
+  });
+
+  const swatchWrap = el.querySelector('.swatches');
+  const currentHex = rgbToHex(colorOf(a.color)).toLowerCase();
+  let selectedColor = a.color;
+  PALETTE.forEach(hex => {
+    const sw = document.createElement('button');
+    sw.type = 'button';
+    sw.className = 'swatch';
+    sw.style.background = hex;
+    sw.dataset.color = hex;
+    if (hex.toLowerCase() === currentHex) sw.classList.add('selected');
+    sw.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      swatchWrap.querySelectorAll('.swatch.selected').forEach(s => s.classList.remove('selected'));
+      sw.classList.add('selected');
+      selectedColor = hex;
+    });
+    swatchWrap.appendChild(sw);
+  });
+
+  el.addEventListener('click', (e) => {
+    if (el.classList.contains('editing')) return;
+    if (e.target.closest('.tools')) return;
+    document.querySelectorAll('.activity.editing').forEach(o => o.classList.remove('editing'));
+    el.classList.add('editing');
+    el.draggable = false;
+    nameIn.focus();
+    nameIn.select();
+  });
+
+  el.querySelector('.save').addEventListener('click', () => {
+    a.emoji = (selectedEmoji || emojiIn.value.trim()) || a.emoji;
+    a.name = nameIn.value.trim() || 'Untitled';
+    a.defaultDurationMinutes = Math.max(5, parseInt(durIn.value) || a.defaultDurationMinutes);
+    a.color = selectedColor;
+    save();
+    render();
+  });
+
+  el.querySelector('.del').addEventListener('click', async () => {
+    const ok = await zineConfirm(`Delete activity "${a.name}"? Placed blocks stay put — they'll fall back to a name-hashed color.`, { danger: true, okLabel: 'delete' });
+    if (!ok) return;
+    state.activities = state.activities.filter(x => x.id !== a.id);
+    save();
+    render();
+  });
+
+  // Drag from palette → day
+  el.addEventListener('dragstart', (e) => {
+    if (el.classList.contains('editing')) { e.preventDefault(); return; }
+    el.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('application/x-drag-kind', 'new-from-activity');
+    e.dataTransfer.setData('application/x-activity-id', a.id);
+    document.body.classList.add('dragging-from-palette');
+  });
+  el.addEventListener('dragend', () => {
+    el.classList.remove('dragging');
+    document.body.classList.remove('dragging-from-palette');
+  });
+
+  return el;
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  for (let i = 0; i < 7; i++) board.appendChild(renderDay(i));
+}
+
+function renderDailies() {
+  const host = document.getElementById('dailies');
+  const blocksEl = host.querySelector('.blocks');
+  blocksEl.innerHTML = '';
+  const items = state.blocks
+    .filter(b => b.dayIndex === -1)
+    .sort((a,b) => a.orderIndex - b.orderIndex);
+  if (items.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = '→ drop daily things here (sleep, meals, shower...)';
+    blocksEl.appendChild(empty);
+  } else {
+    items.forEach(b => blocksEl.appendChild(renderBlock(b)));
+  }
+  host.ondragover  = (e) => onDragOverDay(e, host);
+  host.ondragleave = (e) => onDragLeaveDay(e, host);
+  host.ondrop      = (e) => onDropDay(e, host);
+}
+
+function renderDay(dayIndex) {
+  const day = document.createElement('div');
+  day.className = 'day';
+  day.dataset.dayIndex = dayIndex;
+
+  const dayBlocks = state.blocks
+    .filter(b => b.dayIndex === dayIndex)
+    .sort((a,b) => a.orderIndex - b.orderIndex);
+  const total = dayBlocks.reduce((s, b) => s + b.durationMinutes, 0);
+  const budget = effectiveBudgetMinutes();
+  const pct = budget > 0 ? Math.min(100, (total / budget) * 100) : 0;
+  const over = budget > 0 && total > budget;
+
+  /* day column height scales with budget, using the SAME px-per-min as
+     blocks so a block physically takes up its "share" of the column and
+     unused space at the bottom visually represents free time */
+  const dayMinHeight = 90 + Math.round(budget * 0.25);
+  day.style.minHeight = dayMinHeight + 'px';
+
+  day.innerHTML = `
+    <div class="day-head">
+      <div><span class="name">${DAY_NAMES[dayIndex]}</span></div>
+      <div class="total">
+        <span>${fmtDuration(total)}${budget ? ' / ' + fmtDuration(budget) : ''}</span>
+        <span class="bar ${over ? 'over' : ''}"><span class="fill" style="width:${pct}%"></span></span>
+      </div>
+    </div>
+    <div class="blocks"></div>
+  `;
+
+  const blocksEl = day.querySelector('.blocks');
+  if (dayBlocks.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = '↓ drop activities here';
+    blocksEl.appendChild(empty);
+  } else {
+    dayBlocks.forEach(b => blocksEl.appendChild(renderBlock(b)));
+  }
+
+  // Drop handlers on the whole day
+  day.addEventListener('dragover', (e) => onDragOverDay(e, day));
+  day.addEventListener('dragleave', (e) => onDragLeaveDay(e, day));
+  day.addEventListener('drop', (e) => onDropDay(e, day));
+
+  return day;
+}
+
+function renderBlock(b) {
+  const { emoji, color } = appearanceOf(b.name);
+  const el = document.createElement('div');
+  el.className = 'block';
+  el.draggable = true;
+  el.dataset.blockId = b.id;
+  el.style.background = colorOf(color);
+  /* height scales with duration: ~0.25px per minute, with a floor so
+     short blocks stay readable and a ceiling so long ones don't dominate */
+  const h = Math.max(28, Math.min(120, Math.round(24 + b.durationMinutes * 0.25)));
+  el.style.minHeight = h + 'px';
+  el.innerHTML = `
+    <button class="x" title="delete">×</button>
+    <div class="row">
+      <span class="emoji"></span>
+      <span class="name"></span>
+      <span class="dur"></span>
+    </div>
+    <div class="dur-edit">
+      <label>min:</label>
+      <span class="num tiny" data-step="5">
+        <button type="button" aria-label="less">−</button>
+        <input type="number" min="5" max="1440" step="5">
+        <button type="button" aria-label="more">+</button>
+      </span>
+      <button class="btn tiny save">ok</button>
+    </div>
+  `;
+  el.querySelector('.emoji').textContent = emoji;
+  el.querySelector('.name').textContent = b.name;
+  el.querySelector('.dur').textContent = fmtDuration(b.durationMinutes);
+  const durIn = el.querySelector('.dur-edit input[type="number"]');
+  durIn.value = b.durationMinutes;
+
+  el.querySelector('.x').addEventListener('click', (e) => {
+    e.stopPropagation();
+    state.blocks = state.blocks.filter(x => x.id !== b.id);
+    save();
+    renderDailies();
+    renderBoard();
+    renderBudgetPill();
+  });
+
+  el.addEventListener('click', (e) => {
+    if (e.target.closest('.x') || e.target.closest('.dur-edit')) return;
+    document.querySelectorAll('.block.editing').forEach(o => {
+      if (o !== el) o.classList.remove('editing');
+    });
+    el.classList.toggle('editing');
+    if (el.classList.contains('editing')) {
+      el.draggable = false;
+      durIn.focus();
+      durIn.select();
+    } else {
+      el.draggable = true;
+    }
+  });
+
+  el.querySelector('.save').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const v = Math.max(5, parseInt(durIn.value) || b.durationMinutes);
+    const block = state.blocks.find(x => x.id === b.id);
+    if (block) { block.durationMinutes = v; save(); renderDailies(); renderBoard(); renderBudgetPill(); }
+  });
+
+  // Drag to move between/within days
+  el.addEventListener('dragstart', (e) => {
+    if (el.classList.contains('editing')) { e.preventDefault(); return; }
+    el.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('application/x-drag-kind', 'move-block');
+    e.dataTransfer.setData('application/x-block-id', b.id);
+  });
+  el.addEventListener('dragend', () => {
+    el.classList.remove('dragging');
+    clearDropIndicator();
+  });
+
+  return el;
+}
+
+/* =====================================================================
+   DRAG & DROP
+   ---------------------------------------------------------------------
+   Two drag sources:
+     - palette activity  → creates a new block on drop
+     - existing block    → moves (possibly reorders within same day)
+   One drop target: .day
+   We compute insertion index from the y-coord relative to each block.
+   ===================================================================== */
+
+let dragIndicator = null;
+
+function onDragOverDay(e, day) {
+  e.preventDefault();
+  day.classList.add('drop-target');
+  const blocksEl = day.querySelector('.blocks');
+  const kids = [...blocksEl.querySelectorAll('.block')];
+  const y = e.clientY;
+
+  let insertBefore = null;
+  for (const k of kids) {
+    const r = k.getBoundingClientRect();
+    if (y < r.top + r.height / 2) { insertBefore = k; break; }
+  }
+
+  clearDropIndicator();
+  dragIndicator = document.createElement('div');
+  dragIndicator.className = 'drop-indicator';
+  // Remove the 'empty' placeholder visually when something's incoming
+  const empty = blocksEl.querySelector('.empty');
+  if (empty) empty.style.display = 'none';
+
+  if (insertBefore) blocksEl.insertBefore(dragIndicator, insertBefore);
+  else blocksEl.appendChild(dragIndicator);
+}
+
+function onDragLeaveDay(e, day) {
+  // only clear if we actually left the day
+  if (!day.contains(e.relatedTarget)) {
+    day.classList.remove('drop-target');
+    clearDropIndicator();
+    const empty = day.querySelector('.empty');
+    if (empty) empty.style.display = '';
+  }
+}
+
+function clearDropIndicator() {
+  if (dragIndicator && dragIndicator.parentNode) dragIndicator.parentNode.removeChild(dragIndicator);
+  dragIndicator = null;
+  document.querySelectorAll('.day.drop-target').forEach(d => d.classList.remove('drop-target'));
+}
+
+function onDropDay(e, day) {
+  e.preventDefault();
+  const dayIndex = parseInt(day.dataset.dayIndex, 10);
+  const kind = e.dataTransfer.getData('application/x-drag-kind');
+
+  // figure out the target position (from where indicator sits)
+  const blocksEl = day.querySelector('.blocks');
+  const siblings = [...blocksEl.children].filter(c => c.classList.contains('block') || c.classList.contains('drop-indicator'));
+  let targetPos = siblings.findIndex(c => c.classList.contains('drop-indicator'));
+  if (targetPos === -1) targetPos = siblings.filter(c => c.classList.contains('block')).length;
+
+  if (kind === 'new-from-activity') {
+    const aid = e.dataTransfer.getData('application/x-activity-id');
+    const a = state.activities.find(x => x.id === aid);
+    if (!a) { clearDropIndicator(); return; }
+    const newBlock = {
+      id: uid(),
+      dayIndex,
+      orderIndex: 0,
+      name: a.name,
+      durationMinutes: a.defaultDurationMinutes,
+    };
+    insertBlockAt(newBlock, dayIndex, targetPos);
+  } else if (kind === 'move-block') {
+    const bid = e.dataTransfer.getData('application/x-block-id');
+    const block = state.blocks.find(x => x.id === bid);
+    if (!block) { clearDropIndicator(); return; }
+    moveBlockTo(block, dayIndex, targetPos);
+  }
+
+  clearDropIndicator();
+  save();
+  renderDailies();
+  renderBoard();
+  renderBudgetPill();
+}
+
+function insertBlockAt(newBlock, dayIndex, pos) {
+  const ordered = state.blocks
+    .filter(b => b.dayIndex === dayIndex)
+    .sort((a,b) => a.orderIndex - b.orderIndex);
+  ordered.splice(pos, 0, newBlock);
+  ordered.forEach((b, i) => b.orderIndex = i);
+  state.blocks.push(newBlock);
+}
+
+function moveBlockTo(block, dayIndex, pos) {
+  // remove from old day ordering
+  const fromDay = block.dayIndex;
+  const oldOrder = state.blocks
+    .filter(b => b.dayIndex === fromDay && b.id !== block.id)
+    .sort((a,b) => a.orderIndex - b.orderIndex);
+  oldOrder.forEach((b, i) => b.orderIndex = i);
+
+  // insert in new day
+  block.dayIndex = dayIndex;
+  const newOrder = state.blocks
+    .filter(b => b.dayIndex === dayIndex && b.id !== block.id)
+    .sort((a,b) => a.orderIndex - b.orderIndex);
+  // clamp pos
+  pos = Math.max(0, Math.min(pos, newOrder.length));
+  newOrder.splice(pos, 0, block);
+  newOrder.forEach((b, i) => b.orderIndex = i);
+}
+
+/* =====================================================================
+   HELPERS — color + emoji parsing
+   ===================================================================== */
+
+function rgbToHex(rgb) {
+  if (!rgb) return '#ffd84d';
+  if (rgb.startsWith('#')) return rgb;
+  const m = rgb.match(/\d+/g);
+  if (!m) return '#ffd84d';
+  return '#' + m.slice(0,3).map(n => parseInt(n).toString(16).padStart(2,'0')).join('');
+}
+
+function splitEmoji(str) {
+  // grab the first grapheme cluster if it looks like an emoji, else none
+  const trimmed = str.trim();
+  if (!trimmed) return { emoji: '', name: '' };
+  // emoji-ish: anything non-ASCII at the start
+  const match = trimmed.match(/^(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)\s*(.*)$/u);
+  if (match) return { emoji: match[1], name: match[2].trim() };
+  return { emoji: '', name: trimmed };
+}
+
+/* =====================================================================
+   TOP-LEVEL CONTROLS
+   ===================================================================== */
+
+document.getElementById('btn-add-activity').addEventListener('click', () => {
+  const color = COLORS[state.activities.length % COLORS.length];
+  state.activities.push({
+    id: uid(),
+    name: 'New activity',
+    emoji: '✨',
+    color,
+    defaultDurationMinutes: 30,
+  });
+  save();
+  renderPalette();
+  // open the new one for editing
+  const list = document.getElementById('activity-list');
+  const last = list.lastElementChild;
+  if (last) last.click();
+});
+
+document.getElementById('btn-reset').addEventListener('click', async () => {
+  const ok = await zineConfirm('Wipe everything and start over?', { danger: true, okLabel: 'wipe it' });
+  if (!ok) return;
+  state = defaultState();
+  save();
+  render();
+});
+
+const paletteEl = document.getElementById('palette');
+const paletteBackdrop = document.getElementById('palette-backdrop');
+function openPalette()  { paletteEl.classList.add('open'); paletteBackdrop.classList.add('open'); }
+function closePalette() { paletteEl.classList.remove('open'); paletteBackdrop.classList.remove('open'); }
+document.getElementById('palette-toggle').addEventListener('click', openPalette);
+document.getElementById('palette-close').addEventListener('click', closePalette);
+paletteBackdrop.addEventListener('click', closePalette);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePalette(); });
+
+/* =====================================================================
+   CLIPBOARD SHARE — copy/paste the whole timetable as JSON
+   ===================================================================== */
+
+/* zine confirm dialog — replaces native confirm() with a styled modal */
+const zcBackdrop = document.getElementById('zc-backdrop');
+const zcMsg = document.getElementById('zc-msg');
+const zcOk = document.getElementById('zc-ok');
+const zcCancel = document.getElementById('zc-cancel');
+let zcResolve = null;
+
+function zineConfirm(message, opts = {}) {
+  zcMsg.textContent = message;
+  zcOk.textContent = opts.okLabel || 'ok';
+  zcCancel.textContent = opts.cancelLabel || 'cancel';
+  zcOk.classList.toggle('danger', !!opts.danger);
+  zcOk.classList.toggle('primary', !opts.danger);
+  zcBackdrop.classList.add('open');
+  zcOk.focus();
+  return new Promise((resolve) => { zcResolve = resolve; });
+}
+function zcClose(result) {
+  zcBackdrop.classList.remove('open');
+  if (zcResolve) { zcResolve(result); zcResolve = null; }
+}
+zcOk.addEventListener('click', () => zcClose(true));
+zcCancel.addEventListener('click', () => zcClose(false));
+zcBackdrop.addEventListener('click', (e) => { if (e.target === zcBackdrop) zcClose(false); });
+document.addEventListener('keydown', (e) => {
+  if (!zcBackdrop.classList.contains('open')) return;
+  if (e.key === 'Escape') { e.preventDefault(); zcClose(false); }
+  if (e.key === 'Enter')  { e.preventDefault(); zcClose(true); }
+});
+
+const toastEl = document.getElementById('toast');
+let toastTimer = null;
+function toast(msg, opts = {}) {
+  toastEl.textContent = msg;
+  toastEl.classList.toggle('err', !!opts.err);
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+}
+
+function isEditingElement() {
+  const el = document.activeElement;
+  if (!el || el === document.body) return false;
+  const tag = el.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+  if (el.isContentEditable) return true;
+  // emoji-picker hosts its own shadow DOM — treat it as editing when focused
+  if (tag === 'EMOJI-PICKER') return true;
+  return false;
+}
+function hasTextSelection() {
+  const s = window.getSelection();
+  return !!(s && s.toString().length > 0);
+}
+
+async function copyState() {
+  const payload = JSON.stringify(state, null, 2);
+  try {
+    await navigator.clipboard.writeText(payload);
+    toast('copied timetable! paste it anywhere to share ✎');
+  } catch (e) {
+    // fallback: textarea + execCommand
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = payload; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      toast('copied timetable!');
+    } catch (_) {
+      toast('copy failed — your browser blocked clipboard access', { err: true });
+    }
+  }
+}
+
+async function applyPastedText(text) {
+  let parsed;
+  try { parsed = JSON.parse(text); }
+  catch { toast("that doesn't look like a timetable (not JSON)", { err: true }); return; }
+  if (!parsed || !Array.isArray(parsed.activities) || !Array.isArray(parsed.blocks)) {
+    toast("JSON missing activities/blocks — wrong shape", { err: true }); return;
+  }
+  const existing = (state.blocks || []).length;
+  if (existing > 0) {
+    const ok = await zineConfirm(
+      `Replace your current timetable? ${existing} block${existing===1?'':'s'} will be overwritten.`,
+      { danger: true, okLabel: 'replace' }
+    );
+    if (!ok) return;
+  }
+  state = {
+    activities: parsed.activities,
+    blocks: parsed.blocks,
+    settings: parsed.settings || {},
+  };
+  save();
+  render();
+  toast('loaded timetable!');
+}
+
+async function pasteState() {
+  try {
+    const text = await navigator.clipboard.readText();
+    if (!text) { toast('clipboard is empty', { err: true }); return; }
+    applyPastedText(text);
+  } catch (e) {
+    // fallback: ask the user to paste into a prompt
+    const text = prompt('Paste the timetable JSON here:');
+    if (text) applyPastedText(text);
+  }
+}
+
+document.getElementById('btn-copy').addEventListener('click', copyState);
+document.getElementById('btn-paste').addEventListener('click', pasteState);
+
+document.addEventListener('keydown', (e) => {
+  const mod = e.metaKey || e.ctrlKey;
+  if (!mod || e.altKey) return;
+  if (isEditingElement() || hasTextSelection()) return;  // don't hijack normal copy/paste
+  const k = e.key.toLowerCase();
+  if (k === 'c') { e.preventDefault(); copyState(); }
+  else if (k === 'v') { e.preventDefault(); pasteState(); }
+});
+
+// click elsewhere to close editors
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.activity.editing') && !e.target.closest('#btn-add-activity')) {
+    document.querySelectorAll('.activity.editing').forEach(o => { o.classList.remove('editing'); o.draggable = true; });
+  }
+  if (!e.target.closest('.block.editing')) {
+    document.querySelectorAll('.block.editing').forEach(o => { o.classList.remove('editing'); o.draggable = true; });
+  }
+});
+
+/* wire up +/- buttons on every .num stepper (event-delegated so new ones work) */
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.num button');
+  if (!btn) return;
+  const wrap = btn.closest('.num');
+  const input = wrap.querySelector('input[type="number"]');
+  if (!input) return;
+  const step = parseInt(wrap.dataset.step || input.step || '1', 10);
+  const min = input.min !== '' ? parseInt(input.min, 10) : -Infinity;
+  const max = input.max !== '' ? parseInt(input.max, 10) :  Infinity;
+  const dir = btn === wrap.firstElementChild ? -1 : 1;
+  const cur = parseInt(input.value, 10) || 0;
+  const next = Math.max(min, Math.min(max, cur + dir * step));
+  if (next === cur) return;
+  input.value = next;
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+});
+
+render();
+</script>
+</body>
+</html>
